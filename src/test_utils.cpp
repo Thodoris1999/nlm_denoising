@@ -17,6 +17,9 @@ int main(int argc, char** argv) {
     array_subtract(noisy, img, diff, w*h);
     show_image(diff, h, w);
 
+    double rmse = array_rms_error(img, noisy, w*h);
+    printf("Initial image and noise RMS error: %lf", rmse);
+
     free(diff);
     free(noisy);
     free(img);

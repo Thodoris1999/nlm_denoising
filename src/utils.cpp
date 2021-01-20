@@ -58,3 +58,13 @@ void array_add_noise_gauss(float* arr, float* res, float stdev, int size) {
         res[i] = std::max(res[i], 0.0f);
     }
 }
+
+double array_rms_error(float* arr1, float* arr2, int size) {
+    double error = 0;
+    for (int i = 0; i < size; i++) {
+        error += (arr1[i]-arr2[i]) * (arr1[i]-arr2[i]);
+    }
+    error /= size;
+    error = sqrt(error);
+    return error;
+}
