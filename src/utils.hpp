@@ -26,4 +26,7 @@ void array_add(float* arr1, float* arr2, float* res, int size);
 void array_subtract(float* arr1, float* arr2, float* res, int size);
 void array_add_noise_gauss(float* arr, float* res, float stdev, int size);
 
+// computer RMS error between the two arrays
+double array_rms_error(float* arr1, float* arr2, int size);
+
 #endif

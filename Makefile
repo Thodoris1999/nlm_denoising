@@ -7,7 +7,7 @@ CV_LIBS = -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_imgcodecs
 CFLAGS += $(CV_CFLAGS)
 LIBS += $(CV_LIBS)
 
-DEBUG_CFLAGS = $(CFLAGS) -g -fsanitize=address
+DEBUG_CFLAGS = $(CFLAGS) -g #-fsanitize=address
 
 default: all
 
