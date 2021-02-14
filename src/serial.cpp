@@ -9,11 +9,11 @@ using namespace std;
 using namespace cv;
 
 //Gaussian kernel of the window
-float *gaussian_kernel(int w_length, float sigma){
+float *gaussian_kernel(int w_length, float patch_sigma){
 
     float sum = 0.0;
     float r;
-    float s = 2.0*pow(sigma,2);
+    float s = 2.0*pow(patch_sigma,2);
 
     float *kernel = (float*)malloc(w_length*w_length*sizeof(float));
     if(!kernel){
