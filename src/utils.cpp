@@ -68,3 +68,108 @@ double array_rms_error(float* arr1, float* arr2, int size) {
     error = sqrt(error);
     return error;
 }
+
+float* gaussian_kernel(int w_length, float patch_sigma){
+    float sum = 0.0;
+    float r;
+    float s = 2.0*pow(patch_sigma,2);
+
+    float *kernel = (float*)malloc(w_length*w_length*sizeof(float));
+    if(!kernel){
+        cout << "Couldn't allocate memory for kernel in gaussian_kernel\n";
+    }
+
+    int offset = (w_length-1)/2;
+
+    for(int i=-offset;i<=offset;++i){
+        for(int j=-offset;j<=offset;++j){
+            r = pow(i,2)+pow(j,2);
+            kernel[(i+offset)*w_length+(j+offset)] = (exp(-r/s)) / (M_PI*s);
+            sum += kernel[(i+offset)*w_length+(j+offset)];
+        }
+    }
+
+    float kernel_max = kernel[(w_length*w_length-1)/2];
+
+    for(int i=0;i<w_length*w_length;++i){
+        kernel[i] /= kernel_max;
+    }
+
+    return kernel;
+}
+
+float *padded_image(float *img,int w_length,int img_length){
+
+    int extended_length = img_length+w_length-1;
+    int half = (w_length-1)/2;
+
+    float *pad_img = (float*)calloc(extended_length*extended_length,sizeof(float));
+    if(!pad_img){
+        cout << "Couldn't allocate memory for pad_img in padded_image\n";
+    }
+
+    //top left corner
+    for(int i=0;i<half;++i){
+        for(int j=0;j<half;++j){
+            pad_img[i*extended_length+j] = img[(half-1-i)*img_length+half-1-j];
+        }
+    }
+
+    //upper side
+    for(int i=0;i<half;++i){
+        for(int j=0;j<img_length;++j){
+            pad_img[i*extended_length+half+j] = img[(half-1-i)*img_length+j];
+        }
+    }
+
+    //top right corner
+    for(int i=0;i<half;++i){
+        for(int j=0;j<half;++j){
+            pad_img[i*extended_length+half+img_length+j] = img[(half-i)*img_length-1-j];
+        }
+    }
+
+    //left side
+    for(int i=0;i<img_length;++i){
+        for(int j=0;j<half;++j){
+            pad_img[(half+i)*extended_length+j] = img[i*img_length+half-1-j];
+        }
+    }
+
+    //right side
+    for(int i=0;i<img_length;++i){
+        for(int j=0;j<half;++j){
+            pad_img[(half+i)*extended_length+half+img_length+j] = img[(i+1)*img_length-1-j];
+        }
+    }
+
+    //bottom left corner
+    for(int i=0;i<half;++i){
+        for(int j=0;j<half;++j){
+            pad_img[(half+img_length+i)*extended_length+j] = img[(img_length-1-i)*img_length+half-1-j];
+        }
+    }
+
+    //bottom side
+    for(int i=0;i<half;++i){
+        for(int j=0;j<img_length;++j){
+            pad_img[(half+img_length+i)*extended_length+half+j] = img[(img_length-1-i)*img_length+j];
+        }
+    }
+
+    //bottom right corner
+    for(int i=0;i<half;++i){
+        for(int j=0;j<half;++j){
+            pad_img[(half+img_length+i)*extended_length+half+img_length+j] = img[(img_length-i)*img_length-1-j];
+        }
+    }
+
+    //inside
+    for(int i=0;i<img_length;++i){
+        for(int j=0;j<img_length;++j){
+            pad_img[(half+i)*extended_length+half+j] = img[i*img_length+j];
+        }
+    }
+
+    return pad_img;
+}
