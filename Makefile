@@ -7,11 +7,13 @@ CV_LIBS = -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_imgcodecs
 
 CFLAGS += $(CV_CFLAGS)
 LIBS += $(CV_LIBS)
+NVCCFLAGS = $(CFLAGS) -gencode arch=compute_50,code=sm_50
 
 DEBUG_CFLAGS = $(CFLAGS) -g -fsanitize=address
-DEBUG_NVCCFLAGS = $(CFLAGS) -g -G
+DEBUG_NVCCFLAGS = $(NVCCFLAGS) -g -G
 
 RELEASE_CFLAGS = $(CFLAGS) -O3
+RELEASE_NVCCFLAGS = $(NVCCFLAGS) -O3
 
 default: all
 
@@ -24,10 +26,10 @@ test_utils : src/test_utils.cpp | bin
 	$(CPPC) $(RELEASE_CFLAGS) -o $(BINS_DIR)/$@ $< src/utils.cpp $(LIBS)
 
 serial : src/serial.cpp | bin
-	$(CPPC) $(DEBUG_CFLAGS) -O3 -o $(BINS_DIR)/$@ $< src/utils.cpp $(LIBS)
+	$(CPPC) $(RELEASE_CFLAGS) -o $(BINS_DIR)/$@ $< src/utils.cpp $(LIBS)
         
 parallel : src/parallel.cu | bin
-	$(NVCC) $(DEBUG_NVCCFLAGS) -O3 -o $(BINS_DIR)/$@ $< src/utils.cpp $(LIBS)
+	$(NVCC) $(RELEASE_NVCCFLAGS) -o $(BINS_DIR)/$@ $< src/utils.cpp $(LIBS)
 
 all: test_utils serial parallel
 
