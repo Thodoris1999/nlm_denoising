@@ -29,4 +29,10 @@ void array_add_noise_gauss(float* arr, float* res, float stdev, int size);
 // computer RMS error between the two arrays
 double array_rms_error(float* arr1, float* arr2, int size);
 
+// Returns a gaussian kernel of size @param w_length and standard deviant @param patch_sigma
+float *gaussian_kernel(int w_length, float patch_sigma);
+
+// Pads an image with mirror edge handling https://en.wikipedia.org/wiki/Kernel_(image_processing)#Edge_Handling
+float *padded_image(float *img,int w_length,int img_length);
+
 #endif
