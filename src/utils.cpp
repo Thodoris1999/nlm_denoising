@@ -4,6 +4,8 @@
 #include <cstdlib>
 #include <random>
 #include <algorithm>
+#include <stdio.h>
+#include <math.h>
 
 using namespace std;
 using namespace cv;
@@ -67,6 +69,38 @@ double array_rms_error(float* arr1, float* arr2, int size) {
     error /= size;
     error = sqrt(error);
     return error;
+}
+
+int array_compare(float* arr1, float* arr2, int size) {
+    int count = 0;
+    for (int i = 0; i < size; i++) {
+        if (fabs(arr1[i] - arr2[i]) > 0.001f) {
+            count++;
+            printf("diff at element %d (%lf vs %lf)\n", i, arr1[i], arr2[i]);
+        }
+    }
+    return count;
+}
+
+struct timespec get_duration(struct timespec start, struct timespec end) {
+    struct timespec dur;
+
+    if(end.tv_nsec < start.tv_nsec){
+        dur.tv_nsec = start.tv_nsec - end.tv_nsec;
+        dur.tv_sec = end.tv_sec - start.tv_sec - 1;
+    }
+
+    if(end.tv_nsec > start.tv_nsec){
+        dur.tv_nsec = end.tv_nsec - start.tv_nsec;
+        dur.tv_sec = end.tv_sec - start.tv_sec;
+    }
+    return dur;
+}
+
+double timespec2double(struct timespec dur) {
+    double ret = dur.tv_sec;
+    ret += dur.tv_nsec/1000000000.0;
+    return ret;
 }
 
 float* gaussian_kernel(int w_length, float patch_sigma){

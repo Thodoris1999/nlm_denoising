@@ -3,6 +3,7 @@
 #include <cassert>
 
 #include "utils.hpp"
+#include "parallel.hpp"
 
 #define BLOCK_SIZE 16
 
@@ -39,8 +40,9 @@ __global__ void nlm_kernel(float* denoised_img, float* pad_img, int img_size, fl
                 for (int l = 0; l < w_length; l++) {
                     float val1 = pad_img[(x+k)*pad_length+y+l];
                     float val2 = pad_img[(i+k)*pad_length+j+l];
+                    float diff = val1 - val2;
                     int k_idx = k*w_length + l;
-                    dist += g_kernel[k_idx]*g_kernel[k_idx]*(val1-val2)*(val1-val2);
+                    dist += g_kernel[k_idx]*g_kernel[k_idx]*diff*diff;
                 }
             }
             float weight = expf(-dist/filt_sigma);
@@ -83,12 +85,6 @@ float* cuda_non_local_means(float* img,int img_length,int w_length, float filt_s
 
     // move to host
     gpuErrchk( cudaMemcpy(denoised_img, ddenoised_img, img_length*img_length*sizeof(float), cudaMemcpyDeviceToHost) );
-    /*for (int i = 0; i < img_length; i++) {
-        for (int j = 0; j < img_length; j++) {
-            std::cout << denoised_img[i+j*img_length] << " ";
-        }
-        std::cout << std::endl;
-    }*/
 
     //free allocated memory
     cudaFree(dg_kernel);
@@ -109,8 +105,8 @@ int main(int argc, char** argv) {
 
     int w_length = 5;
     float patch_sigma = 5/3.0;
-    float filt_sigma = 0.02;
     float img_noise_stdev = 0.05;
+    float filt_sigma = 0.02;
 
     //initial image
     float* init_img = read_image(argv[1], &img_height, &img_length);   
@@ -128,6 +124,9 @@ int main(int argc, char** argv) {
     array_add_noise_gauss(init_img, noisy_img, img_noise_stdev, img_length*img_length);
     show_image(noisy_img, img_length, img_length);
 
+    double init_img_error = array_rms_error(noisy_img, init_img, img_length);
+    printf("Noisy image RMS error: %lf\n", init_img_error);
+
     //start timer
     struct timespec init;
     clock_gettime(CLOCK_MONOTONIC, &init);
@@ -139,21 +138,24 @@ int main(int argc, char** argv) {
     struct timespec last;
     clock_gettime(CLOCK_MONOTONIC, &last);
 
-    long ns;
-    uint32_t seconds;
-    if(last.tv_nsec <init.tv_nsec){
-        ns=init.tv_nsec - last.tv_nsec;
-        seconds= last.tv_sec - init.tv_sec -1;
-    }
+    struct timespec dur = get_duration(init, last);
+    double dur_double = timespec2double(dur);
 
-    if(last.tv_nsec >init.tv_nsec){
-        ns= last.tv_nsec -init.tv_nsec ;
-        seconds= last.tv_sec - init.tv_sec ;
-    }
+    double denoised_img_error = array_rms_error(noisy_img, denoised_img, img_length);
+    printf("Denoised image RMS error: %lf\n", denoised_img_error);
+
     printf("Image size: %dx%d, patch size: %dx%d\n",img_length,img_length,w_length,w_length);
-    printf("Seconds elapsed are %u and the nanoseconds are %ld\n",seconds, ns);
+    printf("Seconds elapsed: %lf\n", dur_double);
+
+    /*float* denoised_img_serial = non_local_means(noisy_img,img_length,w_length,filt_sigma,patch_sigma);
+    double denoised_img_error_serial = array_rms_error(noisy_img, denoised_img_serial, img_length);
+    int diff = array_compare(denoised_img_serial, denoised_img, img_length);
+    printf("Denoised image (serial method) RMS error: %lf\n", denoised_img_error_serial);
+    printf("Denoised image serial-parallel different elements: %d\n", diff);*/
 
     show_image(denoised_img,img_length,img_length);
+
+    // compare with serial implementation
 
     //remainder
     float* diff_img = (float*) malloc(img_length*img_length*sizeof(float));

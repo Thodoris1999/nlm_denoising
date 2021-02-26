@@ -4,6 +4,7 @@
 #include <cassert>
 
 #include "utils.hpp"
+#include "serial.hpp"
 
 using namespace std;
 using namespace cv;

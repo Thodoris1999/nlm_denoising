@@ -29,6 +29,12 @@ void array_add_noise_gauss(float* arr, float* res, float stdev, int size);
 // computer RMS error between the two arrays
 double array_rms_error(float* arr1, float* arr2, int size);
 
+// returns the number of elements two arrays differ
+int array_compare(float* arr1, float* arr2, int size);
+
+struct timespec get_duration(struct timespec start, struct timespec end);
+double timespec2double(struct timespec dur);
+
 // Returns a gaussian kernel of size @param w_length and standard deviant @param patch_sigma
 float *gaussian_kernel(int w_length, float patch_sigma);
 
