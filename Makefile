@@ -25,13 +25,13 @@ bin:
 test_utils : src/test_utils.cpp | bin
 	$(CPPC) $(RELEASE_CFLAGS) -o $(BINS_DIR)/$@ $< src/utils.cpp $(LIBS)
 
-serial : src/serial.cpp | bin
-	$(CPPC) $(RELEASE_CFLAGS) -o $(BINS_DIR)/$@ $< src/utils.cpp $(LIBS)
+serial_demo : src/serial_demo.cpp | bin
+	$(CPPC) $(RELEASE_CFLAGS) -o $(BINS_DIR)/$@ $< src/serial.cpp src/utils.cpp $(LIBS)
         
-parallel : src/parallel.cu | bin
-	$(NVCC) $(RELEASE_NVCCFLAGS) -o $(BINS_DIR)/$@ $< src/utils.cpp $(LIBS)
+parallel_demo : src/parallel_demo.cu | bin
+	$(NVCC) $(RELEASE_NVCCFLAGS) -o $(BINS_DIR)/$@ $< src/parallel.cu src/utils.cpp $(LIBS)
 
-all: test_utils serial parallel
+all: test_utils serial_demo parallel_demo
 
 clean:
 	rm -rf $(BINS_DIR)
