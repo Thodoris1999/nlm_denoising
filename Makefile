@@ -31,7 +31,10 @@ serial_demo : src/serial_demo.cpp | bin
 parallel_demo : src/parallel_demo.cu | bin
 	$(NVCC) $(RELEASE_NVCCFLAGS) -o $(BINS_DIR)/$@ $< src/parallel.cu src/utils.cpp $(LIBS)
 
-all: test_utils serial_demo parallel_demo
+shared_demo : src/shared_demo.cu | bin
+	$(NVCC) $(RELEASE_NVCCFLAGS) -o $(BINS_DIR)/$@ $< src/shared.cu src/utils.cpp $(LIBS)
+
+all: test_utils serial_demo parallel_demo shared_demo
 
 clean:
 	rm -rf $(BINS_DIR)
