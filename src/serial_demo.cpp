@@ -35,9 +35,9 @@ int main(int argc, char* argv[]){
     if (visualize) show_image(init_img, img_height, img_length);
 
     // time, RMSE, denoised image
-    string imgagename = string(argv[1]).substr(0, string(argv[1]).size()-4);
+    string imagename = string(argv[1]).substr(0, string(argv[1]).size()-4);
     std::stringstream info_ss;
-    info_ss << w_length << "serial_info.txt";
+    info_ss << imagename << "_" << w_length << "_serial_info.txt";
     FILE* fp = fopen(info_ss.str().c_str(), "a+");
 
     //image with noise
@@ -71,7 +71,7 @@ int main(int argc, char* argv[]){
 
         double denoised_img_error = array_rms_error(noisy_img, denoised_img, img_length);
         printf("Denoised image RMS error: %lf\n", denoised_img_error);
-        fprintf(fp, "%f %lf", h, denoised_img_error);
+        fprintf(fp, "%f %lf\n", h, denoised_img_error);
 
         if (visualize) show_image(denoised_img,img_length,img_length);
 

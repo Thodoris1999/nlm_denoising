@@ -32,6 +32,7 @@ void show_image(float* data, int h, int w) {
 
 void write_image(const char* path, float* img, int size) {
     Mat imgmat(size, size, CV_32FC1, img);
+    imgmat *= 255;
     cv::imwrite(path, imgmat);
 }
 
