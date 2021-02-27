@@ -2,8 +2,8 @@ CPPC=g++
 NVCC=nvcc
 BINS_DIR=bin
 
-CV_CFLAGS = -I/usr/include/opencv4
-CV_LIBS = -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_imgcodecs
+CV_CFLAGS = #-I/usr/include/opencv4
+CV_LIBS = #-lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_imgcodecs
 
 CFLAGS += $(CV_CFLAGS)
 LIBS += $(CV_LIBS)

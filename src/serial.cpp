@@ -7,7 +7,7 @@
 #include "serial.hpp"
 
 using namespace std;
-using namespace cv;
+//using namespace cv;
 
 
 float** find_neighborhoods(float* pad_img,int img_length,int w_length,float* g_kernel){

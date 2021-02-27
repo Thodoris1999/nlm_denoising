@@ -18,7 +18,7 @@ inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort=t
 }
 
 using namespace std;
-using namespace cv;
+//using namespace cv;
 
 // denoised_img is the output and should be zero-initialized by the user
 __global__ void nlm_kernel(float* denoised_img, float* pad_img, int img_size, float* g_kernel, int w_length, float filt_sigma) {

@@ -3,13 +3,14 @@
 #include <cmath>
 #include <cstdlib>
 #include <cassert>
+#include <sstream>
 
 #include "utils.hpp"
 
 #include "shared.hpp"
 
 using namespace std;
-using namespace cv;
+//using namespace cv;
 
 int main(int argc, char* argv[]){
     assert(argc > 2);
@@ -84,8 +85,8 @@ int main(int argc, char* argv[]){
         if (visualize) show_image(diff_img, img_length, img_length);
 
         std::stringstream dimg_ss, diffimg_ss;
-        dimg_ss << imagename << "_" << h << "_" << w_length << "shared_denoised.png";
-        diffimg_ss << imagename <<  "_" << h << "_" << w_length << "shared_diff.png";
+        dimg_ss << imagename << "_" << h << "_" << w_length << "shared_denoised.txt";
+        diffimg_ss << imagename <<  "_" << h << "_" << w_length << "shared_diff.txt";
         write_image(dimg_ss.str().c_str(), denoised_img, img_length);
         write_image(diffimg_ss.str().c_str(), diff_img, img_length);
         std::cout << dimg_ss.str().c_str() << std::endl;

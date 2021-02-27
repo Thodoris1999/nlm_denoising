@@ -2,16 +2,17 @@
 #include "utils.hpp"
 
 #include <cstdlib>
+#include <iostream>
 #include <random>
 #include <algorithm>
 #include <stdio.h>
 #include <math.h>
 
 using namespace std;
-using namespace cv;
+//using namespace cv;
 
 float* read_image(string path, int* h, int* w) {
-    cv::Mat img = cv::imread(path, IMREAD_GRAYSCALE);
+    /*cv::Mat img = cv::imread(path, IMREAD_GRAYSCALE);
     *h = img.rows;
     *w = img.cols;
 
@@ -21,19 +22,34 @@ float* read_image(string path, int* h, int* w) {
             data[j+img.cols*i] = img.at<uint8_t>(i, j) / 255.0;
         }
     }
+    return data;*/
+
+    FILE* fp = fopen(path.c_str(), "r");
+    fscanf(fp, "%d %d\n", h, w);
+    float* data = (float*) malloc(*h * *w *sizeof(float));
+    for (int i = 0; i < *h * *w; i++) {
+        fscanf(fp, "%f\n", &data[i]);
+    }
+    fclose(fp);
     return data;
 }
 
 void show_image(float* data, int h, int w) {
-    Mat img(h, w, CV_32FC1, data);
+    /*Mat img(h, w, CV_32FC1, data);
     imshow("image", img);
-    waitKey(0);
+    waitKey(0);*/
 }
 
 void write_image(const char* path, float* img, int size) {
-    Mat imgmat(size, size, CV_32FC1, img);
+    /*Mat imgmat(size, size, CV_32FC1, img);
     imgmat *= 255;
-    cv::imwrite(path, imgmat);
+    cv::imwrite(path, imgmat);*/
+    FILE* fp = fopen(path, "w");
+    fprintf(fp, "%d %d\n", size, size);
+    for (int i = 0; i < size * size; i++) {
+        fprintf(fp, "%f\n", img[i]);
+    }
+    fclose(fp);
 }
 
 void array_add(float* arr1, float* arr2, float* res, int size) {
