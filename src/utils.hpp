@@ -20,6 +20,7 @@ float* read_image(std::string path, int* h, int* w);
  * Shows greyscale float image. Blocks execution until user presses any button
  */
 void show_image(float* data, int h, int w);
+void write_image(const char* path, float* img, int size);
 
 // performs operation on arr1 and arr2 and stores the result on res (user allocated)
 void array_add(float* arr1, float* arr2, float* res, int size);

@@ -30,6 +30,11 @@ void show_image(float* data, int h, int w) {
     waitKey(0);
 }
 
+void write_image(const char* path, float* img, int size) {
+    Mat imgmat(size, size, CV_32FC1, img);
+    cv::imwrite(path, imgmat);
+}
+
 void array_add(float* arr1, float* arr2, float* res, int size) {
     for (int i = 0; i < size; i++) {
         res[i] = arr1[i] + arr2[i];
