@@ -7,7 +7,7 @@ CV_LIBS = #-lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_imgcodecs
 
 CFLAGS += $(CV_CFLAGS)
 LIBS += $(CV_LIBS)
-NVCCFLAGS = $(CFLAGS) -gencode arch=compute_50,code=sm_50
+NVCCFLAGS = $(CFLAGS)
 
 DEBUG_CFLAGS = $(CFLAGS) -g -fsanitize=address
 DEBUG_NVCCFLAGS = $(NVCCFLAGS) -g -G
